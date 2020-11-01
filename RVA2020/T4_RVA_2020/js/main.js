@@ -147,7 +147,7 @@ function add_text_camera(){
 
 	text.style.position  = 'absolute';
 	text.style.color 	 = 'black';
-	text.style.top 		 = '400px';
+	text.style.top 		 = '430px';
 	text.style.left		 = '820px';
 	text.style.fontSize  = "1.4em";
 	text.style.textAlign = 'left';
@@ -177,22 +177,22 @@ function animate(){
 		pivot.rotation.y = -rotation.y;
 		pivot.rotation.z = rotation.x - Math.PI/2;
 
-		text.innerHTML = '<div id="text"><p><PRE>camera_position: ('
-						  +mesh_camera.position.x.toFixed(2)+', '
-						  +mesh_camera.position.y.toFixed(2)+', '
-						  +mesh_camera.position.z.toFixed(2)+')</br>'+
-						 'camera_rotation: ('+
-						  +mesh_camera.rotation.x.toFixed(2)+', '
-						  +mesh_camera.rotation.y.toFixed(2)+', '
-						  +mesh_camera.rotation.z.toFixed(2)+')</p></div>';
+		// text.innerHTML = '<div id="text"><p><PRE>camera_position: ('
+		//  				  +mesh_camera.position.x.toFixed(2)+', '
+		//  				  +mesh_camera.position.y.toFixed(2)+', '
+		//  				  +mesh_camera.position.z.toFixed(2)+')</p></div>';
+		// 				 'camera_rotation: ('+
+		// 				  +mesh_camera.rotation.x.toFixed(2)+', '
+		// 				  +mesh_camera.rotation.y.toFixed(2)+', '
+		// 				  +mesh_camera.rotation.z.toFixed(2)+')</p></div>';
 	}
 	else{
 		mesh_camera.position.x = 0;
 		mesh_camera.position.y = 100000;
 		mesh_camera.position.z = 0;
-
-		text.innerHTML = '<div id="text"><p><PRE>camera_position: (?, ?, ?)'+
-						 				   '</br>camera_rotation: (?, ?, ?)</p></div>';
+		// text.innerHTML = '<div id="text"><p><PRE>camera_position: (?, ?, ?)</p></div>';
+		// text.innerHTML = '<div id="text"><p><PRE>camera_position: (?, ?, ?)'+
+		//  				 				   '</br>camera_rotation: (?, ?, ?)</p></div>';
 	}
 
 	if(arToolkitSource.ready !== false)

@@ -23,7 +23,7 @@ export default function create_scene_right(){
 
 	var mesh_plane = new THREE.Mesh(
 		new THREE.PlaneGeometry(20, 20, 1),
-		new THREE.MeshPhongMaterial({color: 0xF19F30})
+		new THREE.MeshPhongMaterial({color: 0xAAAAAA})
 	);
 	mesh_plane.material.side = THREE.DoubleSide;
 	mesh_plane.rotation.x = -Math.PI / 2;
@@ -99,6 +99,8 @@ export default function create_scene_right(){
 	// --------------------------------------------- //
 
 	var axesHelper = new THREE.AxesHelper( 5 );
+	axesHelper.rotateX(-Math.PI /2.0);
+	axesHelper.rotateZ(Math.PI /2.0);	
 	scene.add( axesHelper );
 
 	return [scene, camera];
