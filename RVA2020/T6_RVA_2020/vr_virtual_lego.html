@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+		<script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
+		<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="qpp73o4d7hhs94n"></script>
+	</head>
+	<body>
+		<script	src="./js/vr/main.js"></script>
+		<a-scene id="scene" background="color: #FAFAFA" light="defaultLightsEnabled: false">
+			<!-- Lights -->
+			<a-entity light="type: ambient; 
+							 color: #BBBBBB">
+			</a-entity>
+			<a-entity light="type: directional;
+							 color: #FFFFFF; 
+							 intensity: 0.6; 
+							 castShadow: true;
+							 shadowMapHeight: 2048;
+							 shadowMapWidth: 2048;
+							 shadowCameraNear: 0.5;
+							 shadowCameraFar: 100;
+							 shadowCameraLeft: -20;
+							 shadowCameraRight: 30;
+							 shadowCameraBottom: -20;
+							 shadowCameraTop: 20;
+							 shadowRadius: 1" 
+					  position="-8.5 7 6">
+			</a-entity>
+
+			<a-plane position="0 0 0" 
+					 rotation="-90 0 0"
+					 src="assets/floor_texture.jpg" 
+					 repeat="4 4"
+					 width="100" 
+					 height="100" 
+					 shadow>
+			</a-plane>
+
+			<!-- Camera + cursor -->
+			<a-camera position="0 10 10">
+				<a-entity 
+					raycaster="objects: .clickable"
+					cursor="fuse: true; fuseTimeout: 500"
+					position="0 0 -1"
+					geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"
+					material="color: black; shader: flat"
+					animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+					animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+					animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
+				</a-entity>
+			</a-camera>
+
+			<!-- 
+			-->
+		</a-scene>
+
+		<script>
+			create_menu();
+		</script>
+	</body>
+</html>
