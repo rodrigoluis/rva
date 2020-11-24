@@ -201,6 +201,7 @@ function parse_from_json(content){
 	});
 	fr.readAsText(fileT);
 
+	scene_lego.setAttribute("position", "0 0 -20");
 	scene.appendChild(scene_lego);
 }
 function create_menu(){
@@ -208,10 +209,10 @@ function create_menu(){
 
 	var menu_options = document.createElement("a-entity");
 	menu_options.setAttribute("id", "menu_options");
-	menu_options.setAttribute("position", "10 5 5");
+	menu_options.setAttribute("position", "10 2 -5");
 	menu_options.setAttribute("rotation", "0 -45 0");
 
-	pos_y = 1.5;
+	pos_y = 1.1;
 	array_id 	= ["load_file", "zoom_out", "zoom_in", "rotate"];
 	array_value = ["Load File", "Zoom-Out", "Zoom-In", "Rotate"];
 
@@ -229,7 +230,6 @@ function create_menu(){
 		button.setAttribute("position", "0 "+pos_y*i+" 0");
 
 		button.setAttribute("animation-control", "");
-		//button.setAttribute("geometry", "primitive:plane; width: 3.25;");
 		button.setAttribute("geometry", "primitive:plane; width: 3.25;");
 		button.setAttribute("material", "side: double; color: #aaaaaa");
 
