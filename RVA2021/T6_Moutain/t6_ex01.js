@@ -12,6 +12,7 @@
 
 // MODULES
 import * as THREE   from "../build/three.module.js";
+import { FlyControls } from '../build/jsm/controls/FlyControls.js';
 import { VRButton } from "../build/jsm/webxr/VRButton.js";
 import { GUI }      from "../build/jsm/libs/dat.gui.module.js";
 import Stats        from "../build/jsm/libs/stats.module.js";
@@ -26,6 +27,7 @@ var gui = new GUI();
 var clock = new THREE.Clock();
 var loader = new THREE.TextureLoader();
 var moveCamera = false;
+var flyCamera;
 
 // CUSTOM VALUES
 const base   = 5000.0;
@@ -72,6 +74,14 @@ function init()
 
     renderer.shadowMapSoft = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+	// To be used outside a VR environment
+	flyCamera = new FlyControls( camera, renderer.domElement );
+		flyCamera.movementSpeed = 50;
+		flyCamera.domElement = renderer.domElement;
+		flyCamera.rollSpeed = 0.20;
+		flyCamera.autoForward = false;
+		flyCamera.dragToLook = true;
 
 	// CAMERA OBJECT
 	cameraHolder = new THREE.Object3D();
@@ -239,6 +249,8 @@ function animate()
 
 function render()
 {
+    const delta = clock.getDelta();    
+    flyCamera.update(delta);	
 	move();
 	stats.update();
 	renderer.render(scene, camera);

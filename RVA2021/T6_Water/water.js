@@ -39,19 +39,18 @@ const clock = new THREE.Clock();
 let camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, .1, 5000);
 let moveCamera; // Move when a button is pressed 
 
-// Details here:
-// https://threejs.org/docs/index.html#examples/en/controls/FlyControls
+// To be used outside a VR environment
 var flyCamera = new FlyControls( camera, renderer.domElement );
   flyCamera.movementSpeed = 50;
   flyCamera.domElement = renderer.domElement;
   flyCamera.rollSpeed = 0.20;
   flyCamera.autoForward = false;
-  flyCamera.dragToLook = true;
+  flyCamera.dragToLook = false;
 
 //-- 'Camera Holder' to help moving the camera
 const cameraHolder = new THREE.Object3D();
-cameraHolder.position.set( 0, 50, 0 );
-cameraHolder.rotation.set( 0, degreesToRadians(0), 0 );
+cameraHolder.position.set( 0, 200, 0 );
+cameraHolder.rotation.set( 0, degreesToRadians(5), 0 );
 cameraHolder.add(camera);
 
 scene.add( cameraHolder );
@@ -137,8 +136,8 @@ function animate()
 function render() 
 {
     const delta = clock.getDelta();    
-    stats.update();
     flyCamera.update(delta);
+    stats.update();
 
 	water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     move();

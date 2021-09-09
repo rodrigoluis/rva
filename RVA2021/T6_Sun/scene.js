@@ -1,12 +1,13 @@
 //-- Imports -------------------------------------------------------------------------------------
 import * as THREE from '../build/three.module.js';
-import { VRButton } from '../build/jsm/webxr/VRButton.js';
-import {onWindowResize,
-		degreesToRadians} from "../libs/util/util.js";
-
-import {GUI} from       '../build/jsm/libs/dat.gui.module.js';
 import Stats from '../build/jsm/libs/stats.module.js';
+import { FlyControls } from '../build/jsm/controls/FlyControls.js';
+import { VRButton } from '../build/jsm/webxr/VRButton.js';
+import { GUI } from       '../build/jsm/libs/dat.gui.module.js';
 import { Sky } from './assets/objects/Sky/Sky.js';
+
+import {onWindowResize,
+        degreesToRadians} from "../libs/util/util.js";
 
 //-----------------------------------------------------------------------------------------------
 //-- MAIN SCRIPT --------------------------------------------------------------------------------
@@ -28,13 +29,22 @@ let renderer = new THREE.WebGLRenderer();
 
 //-- Setting scene and camera -------------------------------------------------------------------
 let scene = new THREE.Scene();
+let clock = new THREE.Clock();
 let camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, .1, 1000 );
 let moveCamera; // Move when a button is pressed 
+
+// To be used outside a VR environment
+var flyCamera = new FlyControls( camera, renderer.domElement );
+  flyCamera.movementSpeed = 50;
+  flyCamera.domElement = renderer.domElement;
+  flyCamera.rollSpeed = 0.20;
+  flyCamera.autoForward = false;
+  flyCamera.dragToLook = true;
 
 //-- 'Camera Holder' to help moving the camera
 const cameraHolder = new THREE.Object3D();
 cameraHolder.add(camera);
-cameraHolder.position.set(0,6,20);
+cameraHolder.position.set(0,20,20);
 scene.add( cameraHolder );
 //-- Create VR button and settings ---------------------------------------------------------------
 document.body.appendChild( VRButton.createButton( renderer ) );
@@ -147,6 +157,9 @@ function animate() {
 }
 
 function render() {
+    const delta = clock.getDelta();    
+    flyCamera.update(delta);
+
     stats.update();
 
     if(animationOn){
@@ -169,7 +182,7 @@ function createScene(){
     var length = 100;
     
     var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('../assets/textures/sand.jpg', function(tx) {
+    var texture = textureLoader.load('./assets/textures/sand.jpg', function(tx) {
         var planeGeometry = new THREE.PlaneGeometry(1000, 1000);
         planeGeometry.translate(0.0, 0.0, 5); // To avoid conflict with the axeshelper
           
