@@ -24,7 +24,7 @@ let renderer = new THREE.WebGLRenderer();
 	renderer.xr.enabled = true;
 	renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.7;
+    renderer.toneMappingExposure = 0.75;
 	renderer.shadowMap.enabled = true;
 
 //-- Setting scene and camera -------------------------------------------------------------------

@@ -17,6 +17,8 @@ import { VRButton } from "../build/jsm/webxr/VRButton.js";
 import { GUI }      from "../build/jsm/libs/dat.gui.module.js";
 import Stats        from "../build/jsm/libs/stats.module.js";
 
+import {initDefaultBasicLight} from "../libs/util/util.js";
+
 // SHADERS (AS MODULES)
 import vshader from "./shaders/vertex.glsl.js";
 import fshader from "./shaders/fragment.glsl.js";
@@ -42,8 +44,8 @@ const terrainController =
 	height:      650.0,
 	segments:    500.0,
 	brightness:    1.0,
-	sunDirX:       1.0,
-	sunDirY:       5.0,
+	sunDirX:       0.0,
+	sunDirY:       0.0,
 	sunDirZ:      -1.0
 };
 
@@ -61,6 +63,8 @@ function init()
 	var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 90000;
 	camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 
+	initDefaultBasicLight(scene, true, new THREE.Vector3(100, 1000, -5000));
+
 	// RENDER
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
@@ -77,7 +81,7 @@ function init()
 
 	// To be used outside a VR environment
 	flyCamera = new FlyControls( camera, renderer.domElement );
-		flyCamera.movementSpeed = 50;
+		flyCamera.movementSpeed = 80;
 		flyCamera.domElement = renderer.domElement;
 		flyCamera.rollSpeed = 0.20;
 		flyCamera.autoForward = false;
@@ -178,8 +182,8 @@ function island(b, h, u, v, t, d, s)
 {
 	// TEXTURES
 	var tex = [];
-	var bumpTexture = loader.load("images/heightmap.png");
-	var normalTexture = loader.load("images/normalmap.png");
+	var bumpTexture = loader.load("images/map1_height.png");
+	var normalTexture = loader.load("images/map1_normal.png");
 	for (var i = 0; i < 5; i++)
 	{
 		tex.push(loader.load("images/tex" + i.toString() + ".jpg"));
@@ -213,8 +217,12 @@ function island(b, h, u, v, t, d, s)
 	// SHADER ISLAND
 	var planeGeo = new THREE.PlaneGeometry(b, b, u, v);
 	var plane = new THREE.Mesh(planeGeo, customMaterial);
+    plane.castShadow = true;	
+    plane.receiveShadow = true;		
+
 	plane.rotation.x = -Math.PI / 2;
 	plane.position.y = -h / 2; // em função da altura da ilha
+
 	return plane;
 }
 

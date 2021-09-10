@@ -1,5 +1,6 @@
 //-- Imports -------------------------------------------------------------------------------------
 import * as THREE from '../build/three.module.js';
+import { FlyControls } from '../build/jsm/controls/FlyControls.js';
 import {PlaneBufferGeometry, RepeatWrapping} from '../build/three.module.js';
 import { VRButton } from '../build/jsm/webxr/VRButton.js';
 import {degreesToRadians, onWindowResize, radiansToDegrees} from "../libs/util/util.js";
@@ -26,13 +27,22 @@ let renderer = new THREE.WebGLRenderer();
 	renderer.xr.enabled = true;
 	renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.5;
+    renderer.toneMappingExposure = 0.71;
 	renderer.shadowMap.enabled = true;
 
 //-- Setting scene and camera -------------------------------------------------------------------
 let scene = new THREE.Scene();
+let clock = new THREE.Clock();
 let camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, .1, 10000 );
 let moveCamera; // Move when a button is pressed 
+
+// To be used outside a VR environment
+let flyCamera = new FlyControls( camera, renderer.domElement );
+    flyCamera.movementSpeed = 80;
+    flyCamera.domElement = renderer.domElement;
+    flyCamera.rollSpeed = 0.20;
+    flyCamera.autoForward = false;
+    flyCamera.dragToLook = true;
 
 //-- 'Camera Holder' to help moving the camera
 const cameraHolder = new THREE.Object3D();
@@ -87,12 +97,8 @@ const terrainController =
 	size:       5000.0,
 	height:      650.0,
 	segments:    500.0,
-	brightness:    1.0,
-	sunDirX:       1.0,
-	sunDirY:       5.0,
-	sunDirZ:      -1.0,
-	pos:           0.0,
-//	autoSun:     false
+	brightness:    2.0,
+	pos:           0.0
 };
 
 const stats = Stats();
@@ -182,7 +188,10 @@ function animate()
 	renderer.setAnimationLoop( render );
 }
 
-function render() {
+function render() 
+{
+    const delta = clock.getDelta();    
+    flyCamera.update(delta);    
     stats.update();
 	water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
 
@@ -234,14 +243,6 @@ function terrainChanged()
 	ground.material.uniforms["bumpScale"].value  = terrainController.height;
 	ground.material.uniforms["brightness"].value = terrainController.brightness * effectController.exposure;
 	ground.position.y = pos + terrainController.pos;
-/*	if (!terrainController.autoSun)
-	{
-		const x = terrainController.sunDirX;
-		const y = terrainController.sunDirY;
-		const z = terrainController.sunDirZ;
-		ground.material.uniforms["lightDirection"].value = new THREE.Vector3(x, y, z).normalize();
-	}
-	else*/
 	const light = new THREE.Vector3().copy(sun).normalize();
 	light.z *= -1;
 	ground.material.uniforms["lightDirection"].value = light;
@@ -267,25 +268,13 @@ function initGround()
 	const v = new THREE.Vector3(x, y, z);
 	ground = new Ground(b, h, s, s, v, d, 50, pos);
 	scene.add(ground);
-/*	var controls = new function()
-	{
-		this.autoSun = false;
-		this.onAutoSun = function()
-		{
-			terrainController.autoSun = this.autoSun;
-			terrainChanged();
-		};
-	};*/
+
 	const folder = gui.addFolder("Terrain");
 	folder.add(terrainController, "height",        0.0, 1000.0,  10.00).onChange(terrainChanged);
 	folder.add(terrainController, "size",       1000.0, 9000.0, 100.00).onChange(rebuildTerrain);
 	folder.add(terrainController, "segments",      1.0,  816.0,   1.00).onChange(rebuildTerrain);
 	folder.add(terrainController, "brightness",    0.0,    5.0,   0.01).onChange(terrainChanged);
 	folder.add(terrainController, "pos",           0.0,  500.0,  10.00).onChange(terrainChanged).name("position z");
-/*	folder.add(controls, "autoSun", false).name("automatic sun direction").onChange(function(e) { controls.onAutoSun() });
-	folder.add(terrainController, "sunDirX", -10.0, 10.0, 0.1).onChange(terrainChanged).name("sun direction x");
-	folder.add(terrainController, "sunDirY", -10.0, 10.0, 0.1).onChange(terrainChanged).name("sun direction y");
-	folder.add(terrainController, "sunDirZ", -10.0, 10.0, 0.1).onChange(terrainChanged).name("sun direction z");*/
 }
 
 function initSky() {
@@ -323,12 +312,11 @@ function initSky() {
         .name("Change Speed");
 
     guiChanged();
-
 }
 
 function initDefaultOcean()
 {
-    const waterGeometry = new THREE.PlaneGeometry( 50000, 50000 );
+    const waterGeometry = new THREE.PlaneGeometry( 150000, 150000 );
     water = new Water(
         waterGeometry,
         {
@@ -346,13 +334,6 @@ function initDefaultOcean()
     );
     water.rotation.x = - Math.PI / 2;
     scene.add( water );
-
-    // const waterUniforms = water.material.uniforms;
-
-    // const folderWater = gui.addFolder( 'Water' );
-    // folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
-    // folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
-    // folderWater.open();
 }
 
 function initCustomOcean()
@@ -394,5 +375,4 @@ function initCustomOcean()
     folder.add(waterUniforms.steepness,     'value',    0,      1.0,            0.01).name('steepness');
     folder.add(waterUniforms.speed,         'value',    0.0,    5.0,            0.01).name('speed');
     folder.add(waterUniforms.wavesToAdd,    'value',    0,      16,             1).name('add waves');
-    //folder.open();
 }

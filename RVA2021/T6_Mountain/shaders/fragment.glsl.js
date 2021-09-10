@@ -26,8 +26,8 @@ void main()
 	gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0) + t1 + t2 + t3 + t4 + t5;
 
 	// apply diffuse shadows
-	vec3 n = vNormal * 2.0 - 1.0; // correction due to how normal value is passed
-	gl_FragColor.rgb *= max(dot(-lightDirection, n), 0.0) * abs(brightness);
+	// vec3 n = vNormal * 2.0 - 1.0; // correction due to how normal value is passed
+	// gl_FragColor.rgb *= max(dot(-lightDirection, n), 0.0) * abs(brightness);
 }
 `
 export default shader
