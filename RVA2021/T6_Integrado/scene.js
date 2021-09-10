@@ -47,8 +47,10 @@ let flyCamera = new FlyControls( camera, renderer.domElement );
 //-- 'Camera Holder' to help moving the camera
 const cameraHolder = new THREE.Object3D();
 cameraHolder.add(camera);
-cameraHolder.position.set(0, 500, 20);
-cameraHolder.rotation.set(degreesToRadians(-30), degreesToRadians(0), degreesToRadians(0));
+//cameraHolder.position.set(0, 500, 20);
+cameraHolder.position.set( 0, 200, 0 );
+//cameraHolder.rotation.set(degreesToRadians(-30), degreesToRadians(0), degreesToRadians(0));
+cameraHolder.rotation.set( 0, degreesToRadians(5), 0 );
 scene.add( cameraHolder );
 
 // create an AudioListener and add it to the camera
